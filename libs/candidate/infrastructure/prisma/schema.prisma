@@ -1,0 +1,75 @@
+// Prisma schema for Mailverwerkings SaaS
+// Candidate pipeline: RawEmail ingestion → CandidateProfile extraction
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum EmailStatus {
+  RECEIVED
+  PROCESSING
+  PROCESSED
+  FAILED
+}
+
+enum CandidateStatus {
+  PENDING
+  ANALYSED
+  EXPORTED
+  ARCHIVED
+  REVIEW_REQUIRED
+}
+
+model RawEmail {
+  id           String      @id @default(uuid())
+  mailboxId    String
+  messageId    String      @unique
+  subject      String
+  fromAddress  String
+  toAddress    String
+  body         String      @db.Text
+  htmlBody     String?     @db.Text
+  receivedAt   DateTime
+  processedAt  DateTime?
+  status       EmailStatus @default(RECEIVED)
+  headers      Json        @default("{}")
+  attachments  Json        @default("[]")
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  candidateProfile CandidateProfile?
+
+  @@index([mailboxId])
+  @@index([status])
+  @@index([receivedAt])
+}
+
+model CandidateProfile {
+  id             String          @id @default(uuid())
+  rawEmailId     String          @unique
+  name           String
+  email          String
+  phone          String?
+  linkedIn       String?
+  summary        String?         @db.Text
+  education      Json            @default("[]")
+  workExperience Json            @default("[]")
+  skills         Json            @default("[]")
+  confidence     Float
+  status         CandidateStatus @default(PENDING)
+  rawData        Json?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  rawEmail RawEmail @relation(fields: [rawEmailId], references: [id], onDelete: Cascade)
+
+  @@index([email])
+  @@index([status])
+  @@index([confidence])
+}

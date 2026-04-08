@@ -5,5 +5,10 @@
   "main": "./src/index.ts",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@mailverwerkings/email-domain": "*",
+    "imapflow": "^1.0.175",
+    "googleapis": "^144.0.0"
   }
 }

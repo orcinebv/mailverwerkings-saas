@@ -1,2 +1,2 @@
 // @mailverwerkings/candidate-infrastructure public API
-export {};
+export { PrismaService } from './lib/prisma.service';
