@@ -1,0 +1,36 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "production": ["default"],
+    "sharedGlobals": []
+  },
+  "plugins": [
+    {
+      "plugin": "@nx/js/typescript",
+      "options": {
+        "typecheck": {
+          "targetName": "typecheck"
+        },
+        "build": {
+          "targetName": "build",
+          "configName": "tsconfig.lib.json",
+          "buildDepsName": "build-deps",
+          "watchDepsName": "watch-deps"
+        }
+      }
+    }
+  ],
+  "targetDefaults": {
+    "build": { "dependsOn": ["^build"] },
+    "typecheck": { "dependsOn": ["^typecheck"] }
+  },
+  "moduleBoundaryEnforcement": {
+    "rules": [
+      { "sourceTag": "type:infrastructure", "onlyDependOn": ["type:application", "type:domain", "type:types", "type:utils"] },
+      { "sourceTag": "type:application", "onlyDependOn": ["type:domain", "type:types", "type:utils"] },
+      { "sourceTag": "type:domain", "onlyDependOn": ["type:types", "type:utils"] },
+      { "sourceTag": "type:app", "onlyDependOn": ["type:application", "type:infrastructure", "type:domain", "type:types", "type:utils"] }
+    ]
+  }
+}

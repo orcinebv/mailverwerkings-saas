@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../../../dist/libs/ai/infrastructure",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"]
+}
