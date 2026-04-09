@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@mailverwerkings/api",
+  "projectType": "application",
+  "sourceRoot": "apps/api/src",
+  "tags": ["scope:api", "type:app"]
+}

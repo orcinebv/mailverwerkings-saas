@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@mailverwerkings/email-domain",
+  "projectType": "library",
+  "sourceRoot": "libs/email/domain/src",
+  "tags": ["scope:email", "type:domain"]
+}

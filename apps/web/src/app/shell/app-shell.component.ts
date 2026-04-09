@@ -1,0 +1,15 @@
+import { Component, inject } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../auth/auth.service';
+
+@Component({
+  selector: 'app-shell',
+  standalone: true,
+  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  templateUrl: './app-shell.component.html',
+  styleUrl: './app-shell.component.scss',
+})
+export class AppShellComponent {
+  protected readonly authService = inject(AuthService);
+}

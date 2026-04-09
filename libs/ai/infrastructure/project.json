@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@mailverwerkings/ai-infrastructure",
+  "projectType": "library",
+  "sourceRoot": "libs/ai/infrastructure/src",
+  "tags": ["scope:ai", "type:infrastructure"]
+}

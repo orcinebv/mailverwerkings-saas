@@ -1,0 +1,14 @@
+{
+  "name": "@mailverwerkings/email-infrastructure",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@mailverwerkings/email-domain": "*",
+    "imapflow": "^1.0.175",
+    "googleapis": "^144.0.0"
+  }
+}

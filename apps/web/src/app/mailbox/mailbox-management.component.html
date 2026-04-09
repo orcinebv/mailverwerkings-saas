@@ -1,0 +1,141 @@
+<div class="mailbox-page">
+  <header class="page-header">
+    <div>
+      <h1 class="page-title">Mailbox Beheer</h1>
+      <p class="page-subtitle">Koppel en beheer e-mailaccounts voor automatische verwerking.</p>
+    </div>
+    <span class="badge badge--info">
+      {{ mailboxService.connectedCount() }} verbonden
+    </span>
+  </header>
+
+  <!-- Error banner -->
+  @if (mailboxService.error()) {
+    <div class="alert alert--error" role="alert">
+      <strong>Fout:</strong> {{ mailboxService.error() }}
+    </div>
+  }
+
+  <!-- Connect section -->
+  <section class="card">
+    <h2 class="card__title">Mailbox koppelen</h2>
+    <p class="card__desc">Kies een provider om een nieuwe mailbox te verbinden via OAuth of IMAP.</p>
+
+    <div class="provider-grid">
+      @for (provider of providers; track provider.id) {
+        @if (provider.id !== 'imap') {
+          <button
+            class="provider-btn"
+            [disabled]="mailboxService.loading()"
+            (click)="connectOAuth(provider.id)"
+          >
+            <span class="provider-btn__icon">{{ provider.icon }}</span>
+            <span class="provider-btn__label">{{ provider.label }}</span>
+            <span class="provider-btn__action">Verbinden via OAuth →</span>
+          </button>
+        } @else {
+          <button
+            class="provider-btn"
+            [disabled]="mailboxService.loading()"
+            (click)="toggleImapForm()"
+          >
+            <span class="provider-btn__icon">{{ provider.icon }}</span>
+            <span class="provider-btn__label">{{ provider.label }}</span>
+            <span class="provider-btn__action">{{ showImapForm() ? 'Annuleren' : 'Configureren →' }}</span>
+          </button>
+        }
+      }
+    </div>
+
+    <!-- IMAP form -->
+    @if (showImapForm()) {
+      <div class="imap-form">
+        <label class="form-label" for="imap-email">E-mailadres</label>
+        <div class="form-row">
+          <input
+            id="imap-email"
+            type="email"
+            class="form-input"
+            placeholder="gebruiker@domein.nl"
+            [ngModel]="imapEmail()"
+            (ngModelChange)="imapEmail.set($event)"
+          />
+          <button
+            class="btn btn--primary"
+            [disabled]="!canSubmitImap()"
+            (click)="submitImapForm()"
+          >
+            Koppelen
+          </button>
+        </div>
+        <p class="form-hint">
+          IMAP-instellingen worden geconfigureerd via de API na koppeling.
+        </p>
+      </div>
+    }
+  </section>
+
+  <!-- Mailbox list -->
+  <section class="card">
+    <h2 class="card__title">Gekoppelde mailboxen</h2>
+
+    @if (mailboxService.loading()) {
+      <div class="loading-state">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Laden...</span>
+      </div>
+    } @else if (mailboxService.mailboxes().length === 0) {
+      <div class="empty-state">
+        <span class="empty-state__icon">📭</span>
+        <p class="empty-state__text">Nog geen mailboxen gekoppeld.</p>
+      </div>
+    } @else {
+      <ul class="mailbox-list">
+        @for (mailbox of mailboxService.mailboxes(); track mailbox.id) {
+          <li class="mailbox-item">
+            <div class="mailbox-item__info">
+              <div class="mailbox-item__email">{{ mailbox.email }}</div>
+              <div class="mailbox-item__meta">
+                {{ providerLabel(mailbox.provider) }}
+                @if (mailbox.lastSyncAt) {
+                  &bull; Gesynchroniseerd: {{ mailbox.lastSyncAt | date:'dd-MM-yyyy HH:mm' }}
+                }
+              </div>
+            </div>
+
+            <div class="mailbox-item__actions">
+              <span
+                class="badge"
+                [class.badge--success]="mailbox.status === 'connected'"
+                [class.badge--error]="mailbox.status === 'error'"
+                [class.badge--warning]="mailbox.status === 'pending'"
+                [class.badge--neutral]="mailbox.status === 'disconnected'"
+              >
+                {{ statusLabel(mailbox.status) }}
+              </span>
+
+              @if (confirmDisconnectId() === mailbox.id) {
+                <span class="confirm-text">Weet u het zeker?</span>
+                <button class="btn btn--danger btn--sm" (click)="confirmDisconnect()">Ja, ontkoppelen</button>
+                <button class="btn btn--ghost btn--sm" (click)="cancelDisconnect()">Annuleren</button>
+              } @else {
+                <button
+                  class="btn btn--ghost btn--sm"
+                  [disabled]="mailboxService.loading()"
+                  (click)="requestDisconnect(mailbox.id)"
+                >
+                  Ontkoppelen
+                </button>
+              }
+            </div>
+          </li>
+        }
+      </ul>
+    }
+  </section>
+
+  <!-- Confirm disconnect dialog -->
+  @if (confirmDisconnectId() !== null) {
+    <div class="overlay" (click)="cancelDisconnect()" aria-hidden="true"></div>
+  }
+</div>

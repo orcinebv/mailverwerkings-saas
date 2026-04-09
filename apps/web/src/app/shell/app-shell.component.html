@@ -1,0 +1,33 @@
+<div class="shell">
+  <nav class="sidebar">
+    <div class="sidebar__brand">
+      <span class="sidebar__logo">✉</span>
+      <span class="sidebar__title">Mailverwerking</span>
+    </div>
+
+    <ul class="sidebar__nav">
+      <li>
+        <a
+          routerLink="/mailboxes"
+          routerLinkActive="sidebar__nav-item--active"
+          class="sidebar__nav-item"
+        >
+          <span class="sidebar__nav-icon">📬</span>
+          <span>Mailboxen</span>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar__footer">
+      @if (authService.isAuthenticated()) {
+        <button class="btn btn--ghost btn--sm" (click)="authService.clearToken()">
+          Uitloggen
+        </button>
+      }
+    </div>
+  </nav>
+
+  <main class="main-content">
+    <router-outlet />
+  </main>
+</div>

@@ -1,0 +1,7 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "name": "@mailverwerkings/shared-types",
+  "projectType": "library",
+  "sourceRoot": "libs/shared/types/src",
+  "tags": ["scope:shared", "type:types"]
+}
